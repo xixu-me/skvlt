@@ -69,6 +69,23 @@ This repository is not a standalone installer. Its role is to provide a maintain
 > [!IMPORTANT]
 > This repository is meant to be used with Skills Vault. Standalone use outside the Skills Vault workflow is not considered a supported primary workflow.
 
+## Formatting
+
+This repository now includes a lightweight Prettier-based formatting toolchain for Markdown and YAML files.
+
+Local commands:
+
+```bash
+bun install
+bun run format:check
+bun run format
+```
+
+GitHub Actions workflows:
+
+- `Format Check`: runs formatting validation on pull requests and pushes to `main`
+- `Format Fix`: manual `workflow_dispatch` workflow that formats the selected branch and pushes a `chore: apply formatting` commit only when changes are needed
+
 ## Change Policy
 
 Because this manifest is global rather than project-specific, changes are handled conservatively.

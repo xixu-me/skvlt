@@ -8,12 +8,16 @@ The primary artifact is `skvlt.yaml`, which tracks approved skill sources, insta
 
 The main companion document is `MANIFEST_POLICY.md`, which defines how agents should decide whether to add, replace, reject, or escalate manifest changes.
 
-There is currently no application code, package manager, build pipeline, or automated test suite checked into this repository.
+There is currently no application code or automated test suite checked into this repository, but there is now a lightweight bun-based formatting toolchain and GitHub Actions formatting workflows.
 
 ## Repository Layout
 
 - `skvlt.yaml` - source-of-truth manifest for installed skills
 - `MANIFEST_POLICY.md` - maintenance policy for agent-driven manifest changes
+- `package.json` - local formatter entrypoint and scripts
+- `.prettierrc.json` - repository formatting rules
+- `.github/workflows/format-check.yml` - formatting validation workflow
+- `.github/workflows/format-fix.yml` - manual formatting remediation workflow
 - `LICENSE` - repository license
 
 ## Working Rules
@@ -44,30 +48,28 @@ Follow `MANIFEST_POLICY.md` before making substantive manifest changes.
 High-level defaults:
 
 - Add specialized or dependency-closing skills only when they fit an already trusted source.
-- Replace only when two general skills substantially overlap and the replacement is clearly better maintained or more authoritative.
+- When two general skills substantially overlap, prefer the one that is more complete, more practical, and more worth retaining; use maintenance and authority as tie-breakers rather than the primary decision rule.
 - Reject skills that are tightly bound to a specific agent, repository, or runtime unless explicitly approved.
-- Escalate ambiguous overlap, process-shaping changes, or source-level churn to a human.
+- Escalate ambiguous overlap, close calls between broad general skills, process-shaping changes, or source-level churn to a human.
 
 ## Validation
 
-There is no dedicated validation script in this repository today.
-
 Before claiming a manifest edit is complete, verify:
 
+- repository formatting still passes
 - the YAML remains readable
 - the manifest counts are internally consistent
 - the edited source block count matches the listed skills
 - any dependency-based addition is actually justified by installed skills or policy
 
-Useful manual checks in PowerShell:
+Useful local checks:
 
 ```powershell
-Get-Content -Raw skvlt.yaml
+bun install
 ```
 
 ```powershell
-$lines = Get-Content skvlt.yaml
-$lines
+bun run format:check
 ```
 
 If you need upstream skill discovery, prefer checking the local installed skill files first, then use the relevant skills tooling or trusted upstream listing.

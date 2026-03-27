@@ -9,7 +9,7 @@ It covers four outcomes:
 - rejection
 - escalation to humans
 
-The policy is intentionally conservative because the manifest is global. A bad addition creates trigger noise everywhere, not just in one repository.
+The policy is intentionally conservative because the manifest is global. A bad addition creates global maintenance cost, trigger noise, and weaker default skill selection. The goal is not merely to minimize overlap, but to keep the most complete, practical, and worth-retaining skills in each category.
 
 ## Audience
 
@@ -50,6 +50,9 @@ Extracts:
 - source repository
 - skill name
 - trigger description
+- documentation completeness signal
+- practical utility signal
+- depth or breadth of reusable guidance
 - explicit prerequisites
 - references to a specific agent, repository, or runtime
 - dependency skills
@@ -76,8 +79,10 @@ Compares a candidate against installed skills in the same category.
 Its job is to answer:
 
 - Is this a general skill or a specialized skill?
+- Which skill is more complete, practical, and worth retaining if only one remains?
 - Does it substantially overlap an installed skill's trigger scope?
 - If there is overlap, is it "general vs. general" or "general vs. specialized"?
+- Does the overlap create redundant surface area, or does it add meaningful complementary depth?
 - Does it introduce new constraints that make it less portable?
 
 ### Decision Agent
@@ -101,27 +106,33 @@ Approves only escalated changes or batched high-impact changes.
 
 ### 1. Conservative Global Bias
 
-`skvlt.yaml` is a global manifest. The default should be to avoid broad, noisy, or brittle skills unless they add clear value.
+`skvlt.yaml` is a global manifest. The default should be to avoid broad, noisy, or brittle skills unless they add clear value. However, reducing noise is a secondary constraint after choosing the skill that is strongest to keep long-term within its category.
 
-### 2. Trigger Overlap Matters
+### 2. Retention Value First
 
-Substantial similarity of task triggers means two skills occupy the same task category without a real capability distinction. Those should be treated as overlapping.
+When comparing skills in the same category, first ask which one is more complete, more practical, and more worth retaining for repeated real-world use.
 
-### 3. General and Specialized Can Coexist
+Completeness and practical utility should outrank superficial trigger neatness. If one skill is materially better as a lasting default, that matters more than preserving a narrower trigger boundary.
+
+### 3. Trigger Overlap Matters
+
+Substantial similarity of task triggers means two skills occupy the same task category without a real capability distinction. Overlap should be judged after content quality and retention value are assessed, not before.
+
+### 4. General and Specialized Can Coexist
 
 Do not force a trade-off between a broad general skill and a clearly narrower specialized skill.
 
 Trade-offs are required only when the comparison is effectively "general vs. general".
 
-### 4. Trust and Maintenance Break Ties
+### 5. Trust and Maintenance Break Ties
 
-When trigger scope is the same, prefer:
+When quality and practical value are otherwise close, prefer:
 
 - official or domain-relevant authors
 - repositories with strong installation counts
 - active maintenance
 
-### 5. Dependencies Must Close
+### 6. Dependencies Must Close
 
 A skill should not be auto-added if it depends on another skill that is missing from the manifest, unless the same change adds the dependency or a human approves an exception.
 
@@ -154,9 +165,9 @@ Return `add` only when all of the following are true:
 
 - the candidate survives hard exclusion
 - its task category is already allowed in the manifest
-- it is either specialized or genuinely non-overlapping
+- it is either specialized, genuinely non-overlapping, or clearly complementary after comparing retention value against incumbents
 - its dependencies close cleanly
-- it does not introduce broad trigger ambiguity
+- it does not introduce broad trigger ambiguity without enough added practical value to justify coexistence
 
 Typical examples:
 
@@ -168,9 +179,10 @@ Typical examples:
 Return `replace` only when all of the following are true:
 
 - the candidate and incumbent are both general skills
-- their trigger scopes are substantially similar
+- their trigger scopes are substantially similar enough that keeping both mostly duplicates maintenance surface area
+- the candidate is clearly more complete, practical, and worth retaining for repeated use
 - the candidate is at least as portable as the incumbent
-- the candidate wins clearly on trust and maintenance signals
+- trust and maintenance signals do not materially undercut the candidate
 - there is no meaningful capability loss
 
 Replacement should not be used for "general vs. specialized" comparisons.
@@ -180,10 +192,10 @@ Replacement should not be used for "general vs. specialized" comparisons.
 Return `reject` when any of the following is true:
 
 - the skill is bound to a specific agent, repository, or runtime
-- it is a weaker duplicate of an installed general skill
+- it is a weaker or lower-retention-value duplicate of an installed general skill
 - it creates dependency debt
-- it adds noise without adding distinct capability
-- it loses a tie-break on trust and maintenance
+- it adds noise without enough incremental practical value
+- it loses on completeness, practicality, and retention value, with trust and maintenance unable to reverse that judgment
 
 ### Escalation
 
@@ -192,10 +204,11 @@ Return `escalate` when the case is not safely automatable.
 Escalation is required when:
 
 - the overlap judgment depends on interpretation rather than clear capability boundaries
+- the completeness or practical-utility comparison is close rather than clear
 - the change adds a brand-new source block
 - the change removes the last skill from a source block
 - the candidate introduces external auth, paid APIs, or unusual runtime assumptions
-- official-status and install-count signals disagree
+- content quality and trust signals point in different directions
 - the skill shapes broad workflow behavior across many tasks
 
 ## Scoring Rubric
@@ -204,6 +217,7 @@ Use the scoring rubric only after the hard exclusion pass.
 
 ### Positive Signals
 
+- `+4` clearly more complete and practical than the incumbent in the same category
 - `+3` clear specialization with distinct capability
 - `+2` official or strongly domain-relevant author
 - `+2` active maintenance
@@ -213,6 +227,7 @@ Use the scoring rubric only after the hard exclusion pass.
 
 ### Negative Signals
 
+- `-4` shallower, less actionable, or less worth retaining than an incumbent
 - `-3` vague or noisy trigger wording
 - `-3` external service requirement that is not already normal for the manifest
 - `-4` missing dependency
@@ -224,11 +239,11 @@ Use the scoring rubric only after the hard exclusion pass.
 
 ### Decision Bands
 
-- `score >= 5`: eligible for `add` if no overlap concerns remain
+- `score >= 5`: eligible for `add` if overlap review still shows clear incremental retention value
 - `score 2 to 4`: prefer `escalate`
 - `score <= 1`: prefer `reject`
 
-For `replace`, compare candidate score against incumbent score. Auto-replace only when the candidate is ahead by at least `3` points and no escalation condition is present.
+For `replace`, compare candidate score against incumbent score. Auto-replace only when the candidate is ahead by at least `3` points, clearly ahead on completeness and practical value, and no escalation condition is present.
 
 ## Human Escalation Packet
 
@@ -238,6 +253,7 @@ When escalation is required, provide a short packet with:
 - source repository
 - task category
 - incumbent skill, if any
+- completeness and practical utility comparison
 - overlap summary
 - binding and dependency notes
 - trust and maintenance comparison
@@ -263,14 +279,14 @@ Treat these classes differently:
 
 - adding a skill to an existing trusted source
 - adding a missing dependency that is already referenced by installed skills
-- replacing a low-trust general skill with a clearly better general skill
+- replacing a lower-value general skill with a clearly more complete and practical general skill
 
 ### Must Escalate
 
 - new source added
 - source removed
 - process-shaping skill added, removed, or replaced
-- ambiguous overlap between two broad general skills
+- ambiguous overlap between two broad general skills with close retention value
 - any change that would alter maintenance policy itself
 
 ## Recommended Cadence
@@ -316,6 +332,8 @@ For the current `skvlt.yaml`:
 
 - broad workflow skills should be treated as high-impact
 - source-level edits should escalate more readily than skill-level edits
+- when two broad general skills overlap, first ask which one would still be worth keeping if only one remained
+- prefer the skill that is more complete, more practical, and more worth retaining long-term; use trigger noise, authority, and maintenance as secondary constraints
 - dependency-completion additions inside an existing trusted source can be auto-approved
 
-This means a change like "add a missing dependency skill under an existing source" is lower risk than "replace a broad browser automation skill family" or "swap out a process-shaping skill".
+This means a change like "add a missing dependency skill under an existing source" is lower risk than "replace a broad browser automation skill family", but for overlapping general skills the primary question should be retention value rather than trigger neatness alone.

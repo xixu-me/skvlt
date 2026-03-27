@@ -69,6 +69,23 @@ bunx skvlt restore --all
 > [!IMPORTANT]
 > 本存储库只能配合 Skills Vault 使用。不支持脱离 Skills Vault 的独立使用方式，也不将临时手工使用视为正式工作流。
 
+## 格式化
+
+本存储库现在包含一套基于 Prettier 的轻量格式化工具链，用于统一 Markdown 和 YAML 文件格式。
+
+本地常用命令：
+
+```bash
+bun install
+bun run format:check
+bun run format
+```
+
+GitHub Actions 工作流：
+
+- `Format Check`：在 `pull_request` 和推送到 `main` 时校验格式
+- `Format Fix`：手动触发 `workflow_dispatch` 后，对所选分支执行格式化；只有存在变更时才会自动提交 `chore: apply formatting`
+
 ## 变更策略
 
 由于这份清单面向的是全局 skills 集合，而不是单个项目，所以这里对变更采取保守策略。

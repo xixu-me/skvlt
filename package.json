@@ -1,0 +1,13 @@
+{
+  "name": "skvlt",
+  "private": false,
+  "license": "MIT",
+  "packageManager": "bun@1.3.11",
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "3.8.1"
+  }
+}
