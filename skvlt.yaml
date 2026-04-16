@@ -124,11 +124,6 @@ sources:
       - "writing-plans"
       - "writing-skills"
 
-  "op7418/humanizer-zh":
-    count: 1
-    skills:
-      - "humanizer-zh"
-
   "openai/skills":
     count: 28
     skills:
@@ -170,6 +165,11 @@ sources:
     count: 1
     skills:
       - "remotion-best-practices"
+
+  "rendercv/rendercv-skill":
+    count: 1
+    skills:
+      - "rendercv"
 
   "resciencelab/opc-skills":
     count: 10
