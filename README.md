@@ -59,7 +59,7 @@ Recommended workflow:
 Example:
 
 ```bash
-git clone https://github.com/<your-username>/skvlt.git
+git clone https://github.com/xixu-me/skvlt.git
 cd skvlt
 bunx skvlt restore --all
 ```
