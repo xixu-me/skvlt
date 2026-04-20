@@ -5,7 +5,7 @@ scope: "global"
 
 sources:
   "anthropics/skills":
-    count: 11
+    count: 12
     skills:
       - "algorithmic-art"
       - "canvas-design"
@@ -13,6 +13,7 @@ sources:
       - "docx"
       - "mcp-builder"
       - "pdf"
+      - "pptx"
       - "skill-creator"
       - "slack-gif-creator"
       - "theme-factory"
@@ -45,8 +46,8 @@ sources:
     count: 8
     skills:
       - "agents-sdk"
-      - "building-mcp-server-on-cloudflare"
       - "cloudflare"
+      - "cloudflare-email-service"
       - "durable-objects"
       - "sandbox-sdk"
       - "web-perf"
@@ -83,10 +84,10 @@ sources:
       - "huggingface-community-evals"
       - "huggingface-datasets"
       - "huggingface-gradio"
-      - "huggingface-jobs"
       - "huggingface-llm-trainer"
       - "huggingface-paper-publisher"
       - "huggingface-papers"
+      - "huggingface-tool-builder"
       - "huggingface-trackio"
       - "huggingface-vision-trainer"
       - "transformers-js"
@@ -125,7 +126,7 @@ sources:
       - "writing-skills"
 
   "openai/skills":
-    count: 28
+    count: 27
     skills:
       - "aspnet-core"
       - "chatgpt-apps"
@@ -150,7 +151,6 @@ sources:
       - "security-ownership-map"
       - "security-threat-model"
       - "sentry"
-      - "slides"
       - "sora"
       - "speech"
       - "transcribe"
