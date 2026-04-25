@@ -16,11 +16,6 @@ sources:
       - "webapp-testing"
       - "xlsx"
 
-  "blader/humanizer":
-    count: 1
-    skills:
-      - "humanizer"
-
   "cloudflare/skills":
     count: 2
     skills:
@@ -78,6 +73,11 @@ sources:
     skills:
       - "code-security"
       - "llm-security"
+
+  "supabase/agent-skills":
+    count: 1
+    skills:
+      - "supabase-postgres-best-practices"
 
   "vercel-labs/agent-skills":
     count: 3
